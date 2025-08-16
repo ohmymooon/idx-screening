@@ -1,4 +1,4 @@
-# Indonesia Stock Screener Runner
+# Indonesia Stock Screener CLI
 
 A specialized npm task runner for screening potential Indonesian stocks based on technical analysis. This tool runs automated screening sessions to identify promising investment opportunities in the Indonesia Stock Exchange (IDX).
 
