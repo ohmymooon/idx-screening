@@ -3,7 +3,7 @@ import chalk from "chalk";
 import UptrendCorrectionCommand from "./commands/uptrend-correction.js";
 
 export async function main(argv) {
-  const pkgModule = await import("../package.json", { assert: { type: "json" } });
+  const pkgModule = await import("../package.json", { with: { type: "json" } });
   const version = pkgModule.default.version;
 
   try {

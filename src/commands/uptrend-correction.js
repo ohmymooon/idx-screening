@@ -74,21 +74,6 @@ class UptrendCorrectionCommand {
       } catch (error) {
         console.log(chalk.red(error));
       }
-
-      const percent = Math.round(((i + 1) / tickers.length) * 100);
-      // progress bar
-      const barLength = 30;
-      const filledLength = Math.round((percent / 100) * barLength);
-      const filled = chalk.red("█".repeat(filledLength));   // red filled part
-      const empty = chalk.gray("-".repeat(barLength - filledLength)); // gray empty part
-      const bar = filled + empty;
-
-      // rewrite line
-      process.stdout.clearLine(0);
-      process.stdout.cursorTo(0);
-      process.stdout.write(
-        `[${bar}] ${percent}% | ${chalk.greenBright("Processing:")} ${ticker}`
-      );
     }
 
     console.log("\n");
