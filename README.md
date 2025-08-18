@@ -448,17 +448,10 @@ module.exports = {
 
 ## License
 
-MIT © [Your Name]
+MIT © OhMyMooon
 
 ## Changelog
 
 ### v1.0.0
 
 - Initial release
-- Daily stock screening functionality
-- Technical analysis indicators (RSI, MACD, SMA, Volume)
-- Indonesia Stock Exchange (IDX) integration
-- Automated report generation
-- Scheduling support for end-of-session screening
-- CLI interface for manual screening
-- Programmatic API for custom integrations

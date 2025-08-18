@@ -1,20 +1,24 @@
-const Runner = require('../lib/runner');
+import { Command } from "commander";
+import chalk from "chalk";
+import UptrendCorrectionCommand from "./commands/uptrend-correction.js";
 
-// Export the Runner class for programmatic use
-module.exports = Runner;
+export async function main(argv) {
+  const pkgModule = await import("../package.json", { assert: { type: "json" } });
+  const version = pkgModule.default.version;
 
-// If this file is run directly, show usage info
-if (require.main === module) {
-  const chalk = require('chalk');
+  try {
+    const program = new Command();
 
-  console.log(chalk.blue('My NPM Runner'));
-  console.log(chalk.gray('A flexible task runner for Node.js projects'));
-  console.log();
-  console.log('Usage:');
-  console.log('  ' + chalk.cyan('my-runner run <task>') + '    Run a specific task');
-  console.log('  ' + chalk.cyan('my-runner list') + '         List all available tasks');
-  console.log('  ' + chalk.cyan('my-runner init') + '         Initialize configuration');
-  console.log('  ' + chalk.cyan('my-runner watch <task>') + '  Watch files and run task on changes');
-  console.log();
-  console.log('For more information, run: ' + chalk.cyan('my-runner --help'));
+    program
+      .name("omss")
+      .description("Oh My Stock Screener CLI")
+      .version(version, "-v, --version", "output the current version");
+
+    program.addCommand(UptrendCorrectionCommand);
+
+    program.parse(argv);
+  } catch (err) {
+    console.error(chalk.red("CLI failed:"), err.message);
+    process.exit(1);
+  }
 }

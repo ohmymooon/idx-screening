@@ -1,0 +1,132 @@
+//@version=5
+indicator("EMA Crossover with Position Labels", shorttitle="EMA Cross", overlay=true)
+
+// Input parameters
+ema50_length = input.int(50, title="EMA 50 Length", minval=1)
+ema200_length = input.int(200, title="EMA 200 Length", minval=1)
+show_labels = input.bool(true, title="Show Position Labels")
+show_crosses = input.bool(true, title="Show Cross Signals")
+
+// Calculate EMAs
+ema50 = ta.ema(close, ema50_length)
+ema200 = ta.ema(close, ema200_length)
+
+// Plot EMA lines
+plot(ema50, color=color.blue, linewidth=2, title="EMA 50")
+plot(ema200, color=color.orange, linewidth=2, title="EMA 200")
+
+// Detect crossovers
+bullish_cross = ta.crossover(ema50, ema200)  // EMA50 crosses above EMA200
+bearish_cross = ta.crossunder(ema50, ema200) // EMA50 crosses below EMA200
+
+// Plot crossover signals
+plotshape(show_crosses and bullish_cross, style=shape.circle, location=location.belowbar,
+          color=color.green, size=size.normal, title="Bullish Cross")
+plotshape(show_crosses and bearish_cross, style=shape.circle, location=location.abovebar,
+          color=color.red, size=size.normal, title="Bearish Cross")
+
+// Create position labels
+if show_labels
+    var label bullish_label = na
+    var label bearish_label = na
+
+    // Remove previous labels
+    if not na(bullish_label)
+        label.delete(bullish_label)
+    if not na(bearish_label)
+        label.delete(bearish_label)
+
+    // Determine current position
+    if ema50 > ema200
+        bullish_label := label.new(bar_index, high * 1.02,
+                                  text="EMA50 > EMA200\nBullish Position",
+                                  style=label.style_label_down,
+                                  color=color.new(color.green, 20),
+                                  textcolor=color.white,
+                                  size=size.small)
+    else if ema50 < ema200
+        bearish_label := label.new(bar_index, low * 0.98,
+                                  text="EMA50 < EMA200\nBearish Position",
+                                  style=label.style_label_up,
+                                  color=color.new(color.red, 20),
+                                  textcolor=color.white,
+                                  size=size.small)
+
+// Alert conditions
+alertcondition(bullish_cross, title="EMA Bullish Cross",
+               message="EMA50 crossed above EMA200 - Bullish signal")
+alertcondition(bearish_cross, title="EMA Bearish Cross",
+               message="EMA50 crossed below EMA200 - Bearish signal")
+
+// Background color based on EMA position (optional)
+bgcolor_opacity = input.int(95, title="Background Transparency %", minval=0, maxval=100)
+bg_color = ema50 > ema200 ? color.new(color.green, bgcolor_opacity) :
+           ema50 < ema200 ? color.new(color.red, bgcolor_opacity) : na
+bgcolor(bg_color, title="EMA Position Background")
+
+// Table settings
+show_table = input.bool(true, title="Show Info Table")
+table_position = input.string("top_right", title="Table Position",
+                              options=["top_left", "top_center", "top_right",
+                                      "middle_left", "middle_center", "middle_right",
+                                      "bottom_left", "bottom_center", "bottom_right"])
+
+// Calculate metrics for table
+ema_percentage = math.abs((ema50 - ema200) / ema200 * 100)
+trend_direction = ema50 > ema200 ? "BULLISH" : ema50 < ema200 ? "BEARISH" : "NEUTRAL"
+current_volume = volume
+
+// Create and populate table
+if show_table
+    // Determine table position
+    pos = table_position == "top_left" ? position.top_left : table_position == "top_center" ? position.top_center : table_position == "top_right" ? position.top_right : table_position == "middle_left" ? position.middle_left : table_position == "middle_center" ? position.middle_center : table_position == "middle_right" ? position.middle_right : table_position == "bottom_left" ? position.bottom_left : table_position == "bottom_center" ? position.bottom_center : position.bottom_right
+
+    var table info_table = table.new(position = pos, columns = 2, rows = 7, bgcolor = color.white, border_width = 1)
+
+    // Clear table contenttlkm
+    table.clear(info_table, 0, 0, 1, 6)
+
+    // Header
+    table.cell(info_table, 0, 0, "EMA CROSSOVER INFO", text_color=color.black,
+               bgcolor=color.white, text_size=size.normal)
+    table.cell(info_table, 1, 0, "", text_color=color.black,
+               bgcolor=color.white, text_size=size.normal)
+
+    // EMA Percentage
+    table.cell(info_table, 0, 1, "EMA Diff %", text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
+    table.cell(info_table, 1, 1, str.tostring(ema_percentage, "#.##") + "%",
+               text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
+
+    // EMA50 Value
+    table.cell(info_table, 0, 2, "EMA 50", text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
+    table.cell(info_table, 1, 2, str.tostring(ema50, "#.####"),
+               text_color=color.black, bgcolor=color.white, text_size=size.small)
+
+    // EMA200 Value
+    table.cell(info_table, 0, 3, "EMA 200", text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
+    table.cell(info_table, 1, 3, str.tostring(ema200, "#.####"),
+               text_color=color.black, bgcolor=color.white, text_size=size.small)
+
+    // Current Price
+    table.cell(info_table, 0, 4, "Price", text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
+    table.cell(info_table, 1, 4, str.tostring(close, "#.####"),
+               text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
+
+    // Volume
+    table.cell(info_table, 0, 5, "Volume", text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
+    table.cell(info_table, 1, 5, str.tostring(current_volume, "#.#"),
+               text_color=color.black, bgcolor=color.white, text_size=size.small)
+
+    // Trend
+    table.cell(info_table, 0, 6, "Trend", text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
+    table.cell(info_table, 1, 6, trend_direction,
+               text_color=color.black,
+               bgcolor=color.white, text_size=size.small)
