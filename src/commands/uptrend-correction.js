@@ -6,7 +6,7 @@ import { SMA, EMA } from 'technicalindicators'
 
 class UptrendCorrectionCommand {
   constructor() {
-    this.command = new Command("uptend-correction") // change command name here if needed
+    this.command = new Command("uptrend-correction") // change command name here if needed
       .description("Say hello")
       .action(() => { this.run(); });
 
@@ -28,10 +28,6 @@ class UptrendCorrectionCommand {
           ticker,
           { period1: startDate, interval: '1d' }
         );
-
-        // if (!history || history.length < 200) {
-        //   console.log(chalk.bgRed(`${ticker}: Not enough data to calculate EMA200`));
-        // }
 
         const closes = history.map(day => day.close);
 
@@ -77,6 +73,7 @@ class UptrendCorrectionCommand {
     }
 
     console.log("\n");
+    console.table(['Uptrend Correction'])
     uptrendCorrections = uptrendCorrections.sort((a, b) => b.volume - a.volume);
     console.table(uptrendCorrections);
   }

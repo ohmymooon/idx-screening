@@ -1,4 +1,4 @@
-name: Screening is running
+name: Uptrend Correction
 
 on:
   schedule:
