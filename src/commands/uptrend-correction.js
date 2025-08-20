@@ -100,7 +100,6 @@ class UptrendCorrectionCommand {
         embed.addFields({
           name: `${i + 1}. ${s.ticker} — Close: ${s.close}`,
           value: [
-            `[Stockbit](${stockbitUrl})`
             `💵 Volume: ${s.strVolume}`
           ].join("\n"),
           inline: false

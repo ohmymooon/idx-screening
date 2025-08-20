@@ -25,4 +25,4 @@ jobs:
         run: pnpm install
 
       - name: Run CLI
-        run: pnpm exec node ./bin/cli.js uptend-correction --discord ${{ secrets.UPTREND_CORRECTION_DISCORD_WEBHOOK }}
+        run: pnpm exec node ./bin/cli.js uptrend-correction --discord ${{ secrets.UPTREND_CORRECTION_DISCORD_WEBHOOK }}
