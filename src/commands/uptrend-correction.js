@@ -8,7 +8,7 @@ import { WebhookClient, EmbedBuilder } from 'discord.js';
 class UptrendCorrectionCommand {
   constructor() {
     this.command = new Command("uptrend-correction") // change command name here if needed
-      .description("Say hello")
+      .description("Uptrend Correction Screenning")
       .option("--discord <webhook>", "Send result to Discord")
       .action((options) => this.run(options));
   }
@@ -100,7 +100,8 @@ class UptrendCorrectionCommand {
         embed.addFields({
           name: `${i + 1}. ${s.ticker} — Close: ${s.close}`,
           value: [
-            `💵 Volume: ${s.strVolume}`
+            `💵 Volume: ${s.strVolume}`,
+            `Stockbit: https://stockbit.com/symbol/${s.ticker.slice(0, 4)}/chartbit`
           ].join("\n"),
           inline: false
         });
