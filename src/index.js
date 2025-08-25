@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import chalk from "chalk";
 import UptrendCorrectionCommand from "./commands/uptrend-correction.js";
+import FourCandleCorrection from "./commands/four-candle-correction.js"
 
 export async function main(argv) {
   const pkgModule = await import("../package.json", { with: { type: "json" } });
@@ -15,6 +16,7 @@ export async function main(argv) {
       .version(version, "-v, --version", "output the current version");
 
     program.addCommand(UptrendCorrectionCommand);
+    program.addCommand(FourCandleCorrection);
 
     program.parse(argv);
   } catch (err) {
