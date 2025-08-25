@@ -1,9 +1,10 @@
 import { Command } from "commander";
 import chalk from "chalk";
-import fs from "fs";
 import yf from "yahoo-finance2"
 import { SMA, EMA } from 'technicalindicators'
 import { WebhookClient, EmbedBuilder } from 'discord.js';
+import { fetchTicker } from '../utils/fetch-ticker.js';
+import { getStartDate, formatNumber } from '../utils/common.js'
 
 class UptrendCorrectionCommand {
   constructor() {
@@ -14,12 +15,11 @@ class UptrendCorrectionCommand {
   }
 
   async run(options) {
-    const tickerFile = fs.readFileSync("./data/ticker.csv", "utf8");
-    const tickers = tickerFile.split(", ")
+    const tickers = fetchTicker(true);
 
     let uptrendCorrections = [];
 
-    const startDate = this.getStartDate(1000);
+    const startDate = getStartDate(1000);
 
     for (let i = 0; i < tickers.length; i++) {
       const ticker = tickers[i].replaceAll("'", "");
@@ -63,9 +63,9 @@ class UptrendCorrectionCommand {
             priceSMA50: Math.round(priceSMA50),
             priceSMA200: Math.round(priceSMA200),
             priceEMA13: Math.round(priceEMA13),
-            strVolume: this.formatNumber(volume),
-            volumeSMA5: this.formatNumber(volumeSMA5),
-            volumeSMA20: this.formatNumber(volumeSMA20),
+            strVolume: formatNumber(volume),
+            volumeSMA5: formatNumber(volumeSMA5),
+            volumeSMA20: formatNumber(volumeSMA20),
           });
 
           const percent = Math.floor(((i + 1) / tickers.length) * 100);
@@ -111,20 +111,6 @@ class UptrendCorrectionCommand {
     }
     console.table(uptrendCorrections);
   }
-
-  formatNumber(num) {
-    if (num >= 1e9) return (num / 1e9).toFixed(2) + "B"; // Billion
-    if (num >= 1e6) return (num / 1e6).toFixed(2) + "M"; // Million
-    if (num >= 1e3) return (num / 1e3).toFixed(2) + "K"; // Thousand
-    return num.toString();
-  }
-
-  getStartDate(daysBack = 500){
-    const date = new Date();
-    date.setDate(date.getDate() - daysBack);
-    return date.toISOString().split("T")[0];
-  }
-
 
   getCommand() {
     return this.command;
