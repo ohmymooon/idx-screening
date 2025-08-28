@@ -1,0 +1,28 @@
+name: Four Correction Candles
+
+on:
+  schedule:
+    - cron: "0 8 * * 1-5" # 08:00 UTC = 15:00 Jakarta, Mon-Fri
+  workflow_dispatch: # Allows manual run
+
+jobs:
+  run-cli:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20" # or your Node version
+
+      - name: Setup pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run CLI
+        run: pnpm exec node ./bin/cli.js four-candle-correction --discord ${{ secrets.FOUR_CANDLE_CORRECTION_DISCORD_WEBHOOK }}

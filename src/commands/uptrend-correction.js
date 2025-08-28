@@ -15,7 +15,7 @@ class UptrendCorrectionCommand {
   }
 
   async run(options) {
-    const tickers = fetchTicker(true);
+    const tickers = fetchTicker();
 
     let uptrendCorrections = [];
 
