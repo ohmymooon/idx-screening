@@ -4,10 +4,14 @@ A specialized npm task runner for screening potential Indonesian stocks based on
 
 ## Features
 
-- 📊 **Technical Analysis Screening** - Automated technical analysis of Indonesian stocks
-- ⏰ **Scheduled Execution** - Runs screening tasks at the end of each trading session, BSJP (Beli Sore Jual Pagi)
 - 🇮🇩 **IDX Focus** - Specifically designed for Indonesia Stock Exchange data
+- ⏰ **Scheduled Execution** - Runs screening tasks at the end of each trading session, BSJP (Beli Sore Jual Pagi), Risk 1%, Reward 2%
 - 🔄 **Automated Workflows** - Complete screening pipeline from data fetch to report generation
+- 📉 **Golden Cross SMA Short to SMA Long**
+- 📈 **Four Candle Correction**
+- 📊 **Uptrend but Health Correction**
+
+
 
 ## Installation
 
