@@ -1,0 +1,38 @@
+//@version=6
+strategy("Cuan Bungkus by FWB", overlay=true)
+
+in_short_period = input.int(5, title="Short Length", minval=1)
+in_long_period = input.int(20, title="Long Length", minval=1)
+
+in_volume_ma_length = input.int(20, title="Volume MA Length", minval=1)
+in_volume_spike_multiplier = input.float(5, title="Volume Spike Multiplier", minval=5.0, step=0.1)
+
+in_position_size_percent = input.float(10.0, title = "Position Size (%)", minval=1.0, maxval=100.0, step=0.5)
+
+in_reward_percent = input.float(3.0, "Reward %", step=0.1)
+in_risk_percent   = input.float(3.0, "Risk %", step=0.1)
+
+short_line = ta.ema(close, in_short_period)
+long_line  = ta.ema(close, in_long_period)
+
+volume_ma20 = ta.sma(volume, in_volume_ma_length)
+volume_spike = volume > volume_ma20 * in_volume_spike_multiplier
+bullish_alignment = close > short_line and short_line > long_line
+
+buy_signal = bullish_alignment and volume_spike
+if buy_signal
+    position_value = strategy.initial_capital * (in_position_size_percent / 100)
+    shares_to_buy = position_value / close
+    strategy.entry("Long", strategy.long, shares_to_buy)
+
+plotshape(buy_signal, style=shape.triangleup, location=location.belowbar,
+          color=color.green, size=size.auto, text="BUY")
+
+sell_signal = strategy.position_size > 0
+if sell_signal
+    long_take_profit = strategy.position_avg_price * (1 + in_reward_percent / 100)
+    long_stop_loss   = strategy.position_avg_price * (1 - in_risk_percent / 100)
+    strategy.exit("Exit Long", "Long", stop=long_stop_loss, limit=long_take_profit)
+exit_trade = ta.change(strategy.position_size) < 0 
+plotshape(exit_trade, style=shape.triangledown, location=location.abovebar,
+          color=color.red, size=size.auto, text="SELL")
